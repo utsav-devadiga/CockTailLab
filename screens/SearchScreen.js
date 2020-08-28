@@ -1,0 +1,142 @@
+import * as React from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  Keyboard,
+  Image,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as Animate from 'react-native-animatable';
+import { search_data } from '../constants/SearchData';
+import { SharedElement } from "react-navigation-shared-element";
+import TouchableScale from "react-native-touchable-scale";
+
+
+export default class App extends React.Component {
+  state = {
+    searchBarFocused: false,
+  };
+
+ 
+  render() {
+
+
+    return (
+      <View style={{ flex: 1, paddingTop: 20 }}>
+        <View
+          style={{
+            height: 50,
+            backgroundColor: '#FC5404',
+            justifyContent: 'center',
+            paddingHorizontal: 5,
+          }}>
+          <Animate.View
+            animation="slideInRight"
+            duration={1000}
+            style={{
+              height: 40,
+              backgroundColor: 'white',
+              flexDirection: 'row',
+              padding: 5,
+              alignItems: 'center',
+            }}>
+            <Icon
+              name={
+                this.state.searchBarFocused ? 'md-arrow-back' : 'ios-search'
+              }
+              style={{ fontSize: 25 }}
+            />
+            <TextInput
+              placeholder="Search Drinks"
+              style={{ fontSize: 25, paddingLeft: 15 }}
+            />
+          </Animate.View>
+        </View>
+         <View style={styles.Main}>
+        <FlatList
+          style={{
+            width: "100%",
+          }}
+          scrollEnabled={true}
+          data={search_data}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "column",
+                margin: 8,
+                alignContent: "center",
+                justifyContent: "center",
+                height: Dimensions.get("window").height - 390,
+              }}
+            >
+              <View
+                style={{
+                  position: "absolute",
+                  alignItems: "center",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ActivityIndicator />
+              </View>
+              <TouchableScale
+                activeScale={0.95}
+                tension={15}
+                friction={7}
+                useNativeDriver
+                onPress={() =>
+                  this.props.navigation.navigate("Details", {
+                    data: item,
+                  })
+                }
+              >
+                <SharedElement id={`item.${item.idDrink}.photo`}>
+                  <Image
+                    style={styles.imagecard}
+                    source={{ uri: item.strDrinkThumb }}
+                  />
+                </SharedElement>
+                <SharedElement id={`item.${item.strDrink}.text`}>
+                  <Text style={styles.textcard}>{item.strDrink}</Text>
+                </SharedElement>
+              </TouchableScale>
+            </View>
+          )}
+          //Setting the number of column
+          numColumns={1}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+      </View>
+    );
+  }
+}
+const styles = StyleSheet.create({
+  Main: { flex: 1, alignItems: "center", justifyContent: "center" },
+  imagecard: {
+    resizeMode: "cover",
+    borderRadius: 10,
+    height: "100%",
+    width: "100%",
+  },
+  textcard: {
+    position: "absolute",
+    bottom: 20,
+    color: "white",
+    fontSize: 22,
+    shadowColor: "#000",
+    shadowOffset: { width: 0.8, height: 0.8 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
+    marginBottom: 5,
+    marginLeft: 20,
+    fontWeight: "bold",
+    elevation: 5,
+  },
+});

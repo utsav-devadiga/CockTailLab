@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Liquorish",
-    "slug": "Liquorish",
+    "name": "CocktailLab",
+    "slug": "CocktailLab",
     "platforms": [
       "ios",
       "android",
